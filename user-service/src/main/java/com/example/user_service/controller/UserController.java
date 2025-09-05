@@ -3,7 +3,11 @@ package com.example.user_service.controller;
 import com.example.user_service.dto.request.UserDto;
 import com.example.user_service.entity.User;
 import com.example.user_service.repository.UserRepository;
+import com.example.user_service.service.UserService;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,18 +15,20 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserController {
-
-    private final UserRepository userRepository;
+    UserService userService;
+    UserRepository userRepository;
 
     @PostMapping
+    @CacheEvict(value = "allUsers", allEntries = true)
     public User createUser(@RequestBody User user) {
         return userRepository.save(user);
     }
 
     @GetMapping
     public List<User> getAllUsers() {
-        return userRepository.findAll();
+        return userService.getAllUsers();
     }
 
     @GetMapping("/{id}")
