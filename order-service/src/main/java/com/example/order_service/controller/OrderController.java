@@ -5,6 +5,7 @@ import com.example.order_service.dto.request.UserDto;
 import com.example.order_service.dto.response.OrderResponse;
 import com.example.order_service.entity.Order;
 import com.example.order_service.repository.OrderRepository;
+import com.example.order_service.service.OrderService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -17,13 +18,13 @@ import java.util.List;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class OrderController {
-
+    OrderService orderService;
     OrderRepository orderRepository;
     UserClient userClient;
 
     @PostMapping
     public Order createOrder(@RequestBody Order order) {
-        return orderRepository.save(order);
+        return orderService.createOrder(order);
     }
 
     @GetMapping
@@ -41,7 +42,7 @@ public class OrderController {
         return OrderResponse.builder()
                 .orderId(order.getId())
                 .product(order.getProduct())
-                .price(order.getPrice())
+                .price(order.getTotal())
                 .user(userDto)
                 .build();
     }
