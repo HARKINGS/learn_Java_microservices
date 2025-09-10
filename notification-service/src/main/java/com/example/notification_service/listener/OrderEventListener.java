@@ -16,9 +16,9 @@ public class OrderEventListener {
     EmailService emailService;
 
     @KafkaListener(topics = "order-topic", groupId = "notification-group", containerFactory = "orderPlacedEventListenerFactory")
-    public void handleOrderEvent(OrderPlacedEvent event) {
+    public void handleOrderEvent(OrderPlacedEvent event) throws Exception {
         System.out.println("📨 Nhận được event từ Kafka: " + event);
         // Thực hiện gửi email ở đây
-        emailService.sendOrderEmail(event);
+        emailService.sendOrderEmailWithHTMLBody(event);
     }
 }

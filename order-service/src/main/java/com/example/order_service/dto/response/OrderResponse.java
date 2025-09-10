@@ -13,5 +13,6 @@ public class OrderResponse {
     Long orderId;
     String product;
     Double price;
+    Long option;
     UserDto user;
 }

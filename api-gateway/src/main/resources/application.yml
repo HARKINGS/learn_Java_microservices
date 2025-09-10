@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8084
 
 spring:
   application:
@@ -11,12 +11,17 @@ spring:
         webflux:
           routes:
             - id: user-service
-              uri: lb://user-service      # dùng service name đăng ký với Eureka
+              uri: lb://user-service
               predicates:
                 - Path=/api/users/**
 
+#            - id: user-service-auth
+#              uri: lb://user-service
+#              predicates:
+#                - Path=/api/auth/**
+
             - id: order-service
-              uri: lb://order-service     # tương tự
+              uri: lb://order-service
               predicates:
                 - Path=/api/orders/**
 

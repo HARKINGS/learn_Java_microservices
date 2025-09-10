@@ -9,6 +9,8 @@ import com.example.order_service.service.OrderService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,8 +24,17 @@ public class OrderController {
     OrderRepository orderRepository;
     UserClient userClient;
 
-    @PostMapping
+    @PostMapping("/prototype")
     public Order createOrder(@RequestBody Order order) {
+        return orderService.createOrder(order);
+    }
+
+    @PostMapping
+    public Order placeOrder(@RequestBody Order order, JwtAuthenticationToken auth) {
+        String sub = auth.getToken().getSubject(); // lấy Keycloak-sub (UUID)
+        UserDto user = userClient.getUserByKeycloakId(sub); // Feign gọi user-service
+
+        order.setUserId(user.getId()); // gán Long userId
         return orderService.createOrder(order);
     }
 

@@ -8,6 +8,8 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -35,6 +37,18 @@ public class UserController {
     public UserDto getUserById(@PathVariable Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
+        return UserDto.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .email(user.getEmail())
+                .build();
+    }
+
+    @GetMapping("/keycloak/{sub}")
+    public UserDto getUserByKeycloakId(@PathVariable String sub, @AuthenticationPrincipal Jwt jwt) {
+//        Tự tạo user từ token
+        User user = userRepository.findByKeycloakId(sub)
+                .orElseGet(() -> userService.ensureUserExistsFromToken(jwt));
         return UserDto.builder()
                 .id(user.getId())
                 .name(user.getName())

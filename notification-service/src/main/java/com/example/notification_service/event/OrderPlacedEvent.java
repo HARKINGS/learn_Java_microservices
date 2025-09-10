@@ -12,4 +12,5 @@ public class OrderPlacedEvent {
     Long orderId;
     Long userId;
     Double total;
+    Long option;
 }

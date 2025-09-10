@@ -19,11 +19,15 @@ public class OrderService {
     public Order createOrder(Order order) {
         Order saved = orderRepository.save(order);
 
+        System.out.println(saved.getUserId());
+        System.out.println(saved.getId());
+
 //        Gửi event kafka
         OrderPlacedEvent event = OrderPlacedEvent.builder()
                 .orderId(saved.getId())
                 .userId(saved.getUserId())
                 .total(saved.getTotal())
+                .option(saved.getOption())
                 .build();
 
         kafkaTemplate.send("order-topic", event);
